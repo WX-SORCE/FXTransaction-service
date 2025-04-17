@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: marketAnalysis-service
+  cloud:
+    bus:
+      enabled: true
+      refresh:
+        enabled: true
+  config:
+    import: configserver:http://localhost:8888
+  kafka:
+    bootstrap-servers: localhost:9092 # Kafka 服务器地址
+  jpa:
+    hibernate:
+      ddl-auto: update  # 自动更新数据库表结构
+    show-sql: false  # 显示执行的 SQL 语句
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect  # 指定数据库方言
+        format_sql: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    org.springframework.transaction: DEBUG
+    org.hibernate.SQL: DEBUG

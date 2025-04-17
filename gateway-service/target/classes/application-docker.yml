@@ -1,0 +1,38 @@
+server:
+  port: 9002
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    loadbalancer:
+      configurations: zone-preference
+      health-check:
+        initial-delay: 2s  # 调整为2秒初始延迟
+        interval: 30s
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "http://localhost:3000"
+            allowed-methods: "*"
+            allowed-headers: "*"
+            allow-credentials: true
+            max-age: 3600
+      routes:
+        # 用户登录鉴权 9000
+        - id: auth-service
+          uri: lb://auth-service       # lb表示负载均衡算法
+          predicates:
+            - Path=/v1/auth/**
+        # Currency_service 8081
+        - id: marketAnalysis-service
+          uri: lb://marketAnalysis-service
+          predicates:
+            - Path=/v1/currency/**
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
