@@ -1,0 +1,104 @@
+version: '3'
+services:
+  # MySQL 服务
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+#    command: --skip-grant-tables
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: trade_service
+      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  # Redis 服务
+  redis:
+    image: redis:5.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  # Zookeeper 服务
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  # Kafka 服务
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+
+  # 服务发现服务
+  discovery-service:
+    build:
+      context: C:/Users/HP-PC/Desktop/test/discovery-service
+      dockerfile: C:/Users/HP-PC/Desktop/test/discovery-service/discovery-service.Dockerfile
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+
+  # 配置服务
+  config-service:
+    build:
+      context: C:\Users\HP-PC\Desktop\test\config-service
+      dockerfile: C:\Users\HP-PC\Desktop\test\config-service\config-service.Dockerfile
+    container_name: config-service
+    ports:
+      - "8888:8888"
+    depends_on:
+      - discovery-service
+
+  # 网关服务
+  gateway-service:
+    build:
+      context: C:\Users\HP-PC\Desktop\test\gateway-service
+      dockerfile: C:\Users\HP-PC\Desktop\test\gateway-service\gateway-service.Dockerfile
+    container_name: gateway-service
+    ports:
+      - "9002:9002"
+    depends_on:
+      - discovery-service
+      - config-service
+
+  # 交易服务
+  trade-service:
+    build:
+      context: C:\Users\HP-PC\Desktop\test\trade-service
+      dockerfile: C:\Users\HP-PC\Desktop\test\trade-service\trade-service.Dockerfile
+    container_name: trade-service
+    ports:
+      - "9006:9006"
+    depends_on:
+      - discovery-service
+      - config-service
+      - mysql
+      - redis
+      - kafka
+
+volumes:
+  mysql-data:
+  redis-data:

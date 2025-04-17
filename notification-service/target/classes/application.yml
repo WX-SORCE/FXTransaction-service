@@ -1,0 +1,45 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: notification-service  # 服务名称
+  datasource:
+    url: jdbc:mysql://localhost:3306/trade_database?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#  cloud:
+#    bus:
+#      enabled: true
+#      refresh:
+#        enabled: true
+#    config:
+#      uri: http://localhost:8888
+#  config:
+#    import: configserver:http://localhost:8888
+  jpa:
+    hibernate:
+      ddl-auto: update  # 自动更新数据库表结构
+    show-sql: true  # 显示执行的 SQL 语句
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect  # 指定数据库方言
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092  # Kafka服务器地址
+    consumer:
+      group-id: notification-group  # 消费者组ID
+      auto-offset-reset: earliest  # 从最早的消息开始消费
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # key反序列化器
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # value反序列化器
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer  # key序列化器
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer  # value序列化器
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*" # 暴露所有 Actuator 端点，生产环境可按需调整

@@ -1,0 +1,12 @@
+com\alxy\notificationservice\NotificationServiceApplication.class
+com\alxy\notificationservice\config\KafkaConfig.class
+com\alxy\notificationservice\controller\MessageController.class
+com\alxy\notificationservice\service\WebSocketService$MessageWrapper.class
+com\alxy\notificationservice\repository\NotificationRepository.class
+com\alxy\notificationservice\service\NotificationService.class
+com\alxy\notificationservice\kafka\KafkaConsumer.class
+com\alxy\notificationservice\config\WebSocketConfig.class
+com\alxy\notificationservice\entity\Notification.class
+com\alxy\notificationservice\service\impl\NotificationServiceImpl.class
+com\alxy\notificationservice\service\WebSocketService.class
+com\alxy\notificationservice\controller\NotificationController.class
