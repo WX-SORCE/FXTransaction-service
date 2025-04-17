@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: auth-service  # 服务名称
+#  datasource:
+#    url: jdbc:mysql://auth-service:3306/privatewealthsuite?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+#    username: root
+#    password: 123456
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    bus:
+      enabled: true
+      refresh:
+        enabled: true
+  config:
+      import: configserver:http://config-service:8888
+  kafka:
+    bootstrap-servers: kafka:9092 # Kafka 服务器地址
+    jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true  # 格式化 SQL 日志，方便查看
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # 暴露所有 Actuator 端点，生产环境可按需调整
